@@ -7,6 +7,7 @@ import App from './containers/App';
 import HomePage from './containers/HomePage';
 import UserProfileEditPage from './containers/UserProfileEditPage';
 import Question from './containers/Question';
+import Comment from './containers/Comment';
 
 export default (
   <Route path="/" component={App}>
@@ -15,6 +16,7 @@ export default (
     <Route name="profile" path="profile" component={ UserProfileEditPage } />
     <Route name="logout" path="logout" component={Logout} />
     <Route name="question detail" path="questions/:questionId" component={ Question } />
+    <Route name="comment list" path="comments" component={ Comment } />
     <Route path="*" component={HomePage} />
   </Route>
 );
