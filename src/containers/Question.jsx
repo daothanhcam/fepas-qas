@@ -17,12 +17,14 @@ class Question extends Component {
     return (dispatch) => {
       const fireRefQuestion = fireRef.child('questions');
       const fireRefComment = fireRef.child('comments');
-      fireRefQuestion.orderByChild('uid').equalTo(id).once('child_added').then((snap) => {
+      fireRefQuestion.orderByChild('id').equalTo(id).once('child_added').then((snap) => {
         const question = snap.val();
+        console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq', snap);
         question.comments = [];
         fireRefComment.orderByChild('qid').equalTo(id).on('child_added', (snapshot) => {
           question.comments.push(snapshot.val());
         });
+        console.log('dataaaaaaaaaaaaaaaa', question);
         return dispatch({
           type: C.QUESTION_DETAIL_GET,
           data: question
@@ -32,6 +34,7 @@ class Question extends Component {
   }
 
   render() {
+    console.log('qqqqqqqqqqqqqqqqqthisssssssssssssssssssssssssssss', this);
     const question = this.props.question;
     let content;
     if (question.status) {
