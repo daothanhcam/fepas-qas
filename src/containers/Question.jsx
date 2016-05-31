@@ -4,6 +4,7 @@ import Firebase from 'firebase';
 import store from '../store';
 import { connect } from 'react-redux';
 import CommentForm from '../components/CommentForm';
+import { deleteQuestion } from '../actions/questions_action';
 
 const fireRef = new Firebase(C.FIREBASE_URI);
 
@@ -17,7 +18,7 @@ class Question extends Component {
     return (dispatch) => {
       const fireRefQuestion = fireRef.child('questions');
       const fireRefComment = fireRef.child('comments');
-      fireRefQuestion.orderByChild('uid').equalTo(id).once('child_added').then((snap) => {
+      fireRefQuestion.orderByChild('id').equalTo(id).once('child_added').then((snap) => {
         const question = snap.val();
         question.comments = [];
         fireRefComment.orderByChild('qid').equalTo(id).on('child_added', (snapshot) => {
@@ -45,6 +46,12 @@ class Question extends Component {
           <p>Title: {question.data.title}</p>
           <p>Content: {question.data.content}</p>
           <p>Tags: {question.data.tags}</p>
+          <button
+            className="btn btn-danger btn-sm"
+            onClick={() => this.props.deleteQuestion(question.data.id)}
+          >
+            <span className="glyphicon glyphicon-trash"></span>Delete Question
+          </button>
           <ul>Comments: {commentView}</ul>
           <CommentForm qid={question.data.uid} />
         </div>
@@ -61,7 +68,12 @@ class Question extends Component {
 const mapStateToProps = (state) => {
   return {
     question: state.question,
+    uid: state.auth.uid
   };
 };
 
-export default connect(mapStateToProps)(Question);
+const mapDispatchToProps = {
+  deleteQuestion
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Question);

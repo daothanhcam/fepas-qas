@@ -18,3 +18,18 @@ export const submitQuestion = (question) => {
     });
   };
 };
+
+export const deleteQuestion = (questionId) => {
+  return (dispatch) => {
+    dispatch({ type: C.DELETE_QUESTION });
+    questionRef.orderByChild('id').equalTo(questionId).once('child_added').then((snap) => {
+      questionRef.child(snap.key()).remove().then((error) => {
+        if (!error) {
+          dispatch({ type: C.QUESTION_DELETED });
+        } else {
+          dispatch({ type: C.QUESTION_DELETE_FAILURE });
+        }
+      });
+    });
+  };
+};
