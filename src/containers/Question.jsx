@@ -4,6 +4,7 @@ import Firebase from 'firebase';
 import store from '../store';
 import { connect } from 'react-redux';
 import CommentForm from '../components/CommentForm';
+import CommentItem from '../components/CommentItem';
 
 const fireRef = new Firebase(C.FIREBASE_URI);
 
@@ -17,7 +18,7 @@ class Question extends Component {
     return (dispatch) => {
       const fireRefQuestion = fireRef.child('questions');
       const fireRefComment = fireRef.child('comments');
-      fireRefQuestion.orderByChild('uid').equalTo(id).once('child_added').then((snap) => {
+      fireRefQuestion.orderByChild('id').equalTo(id).once('child_added').then((snap) => {
         const question = snap.val();
         question.comments = [];
         fireRefComment.orderByChild('qid').equalTo(id).on('child_added', (snapshot) => {
@@ -37,7 +38,9 @@ class Question extends Component {
     if (question.status) {
       const commentView = question.data.comments.reverse().map((comment) => {
         return (
-          <li key={comment.id}>{comment.content}</li>
+          <div className="col-md-12">
+            <li key={comment.id} className={"edit"} >{comment.content}</li>
+          </div>
         );
       });
       content = (
@@ -46,7 +49,7 @@ class Question extends Component {
           <p>Content: {question.data.content}</p>
           <p>Tags: {question.data.tags}</p>
           <ul>Comments: {commentView}</ul>
-          <CommentForm qid={question.data.uid} />
+          <CommentItem qid={question.data.uid} />
         </div>
       );
     } else {
